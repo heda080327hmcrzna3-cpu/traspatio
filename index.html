@@ -3,31 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jardines Polinizadores - Traspatio</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Jardines Polinizadores</title>
+    <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-
     <header>
-        <img src="logo.png" alt="Logo Jardines" class="logo">
-        <h1>Jardines Polinizadores</h1>
+        <img src="img/logo.png" alt="Logo" width="100">
+        <h1>Jardines Polinizadores en Traspatio</h1>
     </header>
 
     <nav>
-        <button onclick="alert('Catálogo: Lavanda, Girasol, Salvia')">Catálogo de Plantas</button>
-        <button onclick="alert('Cuidados: Riego constante y luz solar directa')">Recomendaciones</button>
+        <a href="#inicio">Inicio</a>
+        <a href="#catalogo">Catálogo</a>
+        <a href="#cuidados">Cuidados</a>
+        <a href="#registro">Registro</a>
     </nav>
 
-    <main>
-        <section>
-            <h2>¿Qué es Traspatio?</h2>
-            <p>Aplicación para guiar la construcción y mantenimiento de jardines que atraen polinizadores.</p>
-        </section>
-    </main>
+    <section id="inicio">
+        <h2>Propósito</h2>
+        <p>Desarrollar una aplicación que permita informar, guiar y organizar la construcción y mantenimiento de jardines polinizadores.</p>
+    </section>
 
-    <footer>
-        <p>Proyecto Transversal - Desarrollo Móvil</p>
-    </footer>
+    <section id="catalogo">
+        <h2>Catálogo de plantas</h2>
+        <p>Aquí encontrarás las mejores plantas para atraer polinizadores.</p>
+    </section>
 
+    <section id="cuidados">
+        <h2>Recomendaciones de cuidado</h2>
+        <p>Consejos sobre riego, luz y suelo.</p>
+    </section>
+
+    <section id="registro">
+        <h2>Registro de plantas</h2>
+        <p>Sección para capturar nuevos registros en la base de datos.</p>
+    </section>
+
+    <script src="js/main.js"></script>
 </body>
 </html>
