@@ -1,45 +1,665 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jardines Polinizadores</title>
-    <link rel="stylesheet" href="css/estilos.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PoliJardín</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --tierra:    #6b4226;
+      --tierra-cl: #9c6644;
+      --arena:     #d4b896;
+      --crema:     #f5ede0;
+      --crema-osc: #e8d9c5;
+      --musgo:     #4a5e3a;
+      --musgo-cl:  #6b7f56;
+      --hoja:      #8aab6e;
+      --hueso:     #faf6f0;
+      --carbon:    #2c1f14;
+      --gris:      #7a6a5a;
+      --naranja:   #c4622d;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      font-family:'Lato',sans-serif;
+      background:var(--hueso);
+      color:var(--carbon);
+      max-width:430px;
+      margin:0 auto;
+      overflow-x:hidden;
+    }
+
+    /* HERO */
+    .hero{
+      background:var(--crema);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-top{
+      background:var(--tierra);
+      padding:56px 28px 40px;
+      position:relative;
+    }
+    .hero-top::after{
+      content:'';
+      position:absolute;
+      bottom:-30px; left:0; right:0;
+      height:60px;
+      background:var(--tierra);
+      clip-path:ellipse(55% 100% at 50% 0%);
+    }
+    .hero-label{
+      font-size:10px;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+      color:var(--arena);
+      margin-bottom:16px;
+    }
+    .hero-title{
+      font-family:'Playfair Display',serif;
+      font-size:40px;
+      line-height:1.1;
+      color:#fff;
+      margin-bottom:14px;
+    }
+    .hero-title em{color:var(--arena);font-style:italic;}
+    .hero-sub{
+      font-size:14px;
+      color:rgba(255,255,255,0.65);
+      line-height:1.65;
+      font-weight:300;
+    }
+    .hero-illus{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:24px;
+      padding:60px 28px 40px;
+    }
+    .illus-ring{
+      width:180px;height:180px;
+      border-radius:50%;
+      background:var(--crema-osc);
+      border:8px solid var(--arena);
+      display:flex;align-items:center;justify-content:center;
+      font-size:80px;
+      box-shadow:0 12px 40px rgba(107,66,38,0.2);
+      animation:breathe 5s ease-in-out infinite;
+    }
+    @keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+    .illus-dots{
+      display:flex;gap:8px;
+    }
+    .illus-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--arena);opacity:0.5;
+    }
+    .illus-dot:nth-child(2){opacity:1;background:var(--tierra-cl);}
+    .hero-btn{
+      margin:0 28px 48px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:var(--musgo);
+      color:#fff;
+      padding:18px 24px;
+      border-radius:16px;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      border:none;
+      font-family:'Lato',sans-serif;
+      box-shadow:0 6px 24px rgba(74,94,58,0.35);
+      transition:transform 0.2s,box-shadow 0.2s;
+    }
+    .hero-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(74,94,58,0.45);}
+    .hero-btn span{font-size:20px;}
+
+    /* STATS STRIP */
+    .stats-strip{
+      display:flex;
+      background:var(--tierra);
+      padding:16px 0;
+    }
+    .stat{
+      flex:1;text-align:center;
+      border-right:1px solid rgba(255,255,255,0.15);
+    }
+    .stat:last-child{border-right:none;}
+    .stat-n{
+      font-family:'Playfair Display',serif;
+      font-size:22px;color:#fff;
+    }
+    .stat-l{font-size:10px;color:var(--arena);letter-spacing:0.08em;text-transform:uppercase;margin-top:2px;}
+
+    /* NAV */
+    .nav{
+      display:flex;
+      background:var(--hueso);
+      border-bottom:2px solid var(--crema-osc);
+      position:sticky;top:0;z-index:100;
+      box-shadow:0 2px 12px rgba(107,66,38,0.08);
+    }
+    .nav-tab{
+      flex:1;padding:13px 4px;
+      text-align:center;
+      font-size:10px;font-weight:700;
+      letter-spacing:0.08em;text-transform:uppercase;
+      color:var(--gris);
+      cursor:pointer;
+      border-bottom:2.5px solid transparent;
+      margin-bottom:-2px;
+      transition:color 0.2s,border-color 0.2s;
+    }
+    .nav-tab span{display:block;font-size:18px;margin-bottom:3px;}
+    .nav-tab.active{color:var(--tierra);border-bottom-color:var(--tierra);}
+
+    /* SECTIONS */
+    .section{display:none;padding:26px 20px 90px;}
+    .section.active{display:block;}
+
+    .sec-head{margin-bottom:22px;}
+    .sec-eyebrow{
+      font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+      color:var(--tierra-cl);font-weight:700;margin-bottom:6px;
+    }
+    .sec-title{
+      font-family:'Playfair Display',serif;
+      font-size:26px;color:var(--carbon);margin-bottom:6px;
+    }
+    .sec-sub{font-size:13px;color:var(--gris);line-height:1.6;}
+
+    /* SEARCH */
+    .search{
+      display:flex;align-items:center;gap:10px;
+      background:var(--crema);border:1.5px solid var(--crema-osc);
+      border-radius:14px;padding:12px 16px;margin-bottom:16px;
+    }
+    .search input{
+      border:none;background:transparent;flex:1;
+      font-size:14px;font-family:'Lato',sans-serif;color:var(--carbon);outline:none;
+    }
+    .search input::placeholder{color:var(--gris);}
+
+    /* CHIPS */
+    .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px;scrollbar-width:none;}
+    .chips::-webkit-scrollbar{display:none;}
+    .chip{
+      white-space:nowrap;padding:7px 15px;border-radius:20px;
+      font-size:11px;font-weight:700;
+      background:var(--crema);color:var(--gris);
+      border:1.5px solid var(--crema-osc);cursor:pointer;
+      transition:all 0.18s;
+    }
+    .chip.active{background:var(--tierra);color:#fff;border-color:var(--tierra);}
+
+    /* PLANT GRID */
+    .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .pcard{
+      background:#fff;border-radius:20px;overflow:hidden;
+      border:1.5px solid var(--crema-osc);
+      cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;
+    }
+    .pcard:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(107,66,38,0.15);}
+    .pimg{height:108px;display:flex;align-items:center;justify-content:center;font-size:50px;position:relative;}
+    .pimg-badge{
+      position:absolute;top:8px;right:8px;
+      background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);
+      font-size:9px;font-weight:700;
+      color:var(--musgo);padding:3px 7px;border-radius:8px;
+      letter-spacing:0.06em;text-transform:uppercase;
+    }
+    .pinfo{padding:12px 12px 14px;}
+    .pname{
+      font-family:'Playfair Display',serif;
+      font-size:14px;color:var(--carbon);margin-bottom:2px;
+    }
+    .psci{font-size:10px;font-style:italic;color:var(--gris);margin-bottom:8px;}
+    .ptags{display:flex;flex-wrap:wrap;gap:4px;}
+    .ptag{
+      font-size:10px;font-weight:700;padding:3px 8px;
+      border-radius:8px;background:var(--crema);color:var(--tierra-cl);
+    }
+
+    /* MODAL */
+    .modal{
+      display:none;position:fixed;inset:0;
+      background:rgba(44,31,20,0.7);z-index:200;
+      align-items:flex-end;justify-content:center;
+    }
+    .modal.open{display:flex;animation:fi 0.2s;}
+    @keyframes fi{from{opacity:0}to{opacity:1}}
+    .msheet{
+      background:var(--hueso);border-radius:24px 24px 0 0;
+      width:100%;max-width:430px;
+      padding:24px 22px 48px;
+      animation:su 0.28s ease;
+    }
+    @keyframes su{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .mhandle{width:36px;height:4px;background:var(--crema-osc);border-radius:2px;margin:0 auto 20px;}
+    .mtop{display:flex;gap:16px;margin-bottom:18px;}
+    .memoji{
+      font-size:60px;width:88px;height:88px;
+      border-radius:18px;display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;
+    }
+    .mnames{flex:1;}
+    .mname{font-family:'Playfair Display',serif;font-size:20px;color:var(--carbon);margin-bottom:3px;}
+    .msci{font-size:11px;font-style:italic;color:var(--gris);margin-bottom:10px;}
+    .mbadges{display:flex;gap:6px;flex-wrap:wrap;}
+    .mbadge{font-size:10px;font-weight:700;padding:4px 10px;border-radius:10px;background:var(--crema);color:var(--tierra);}
+    .mlabel{
+      font-size:10px;font-weight:700;letter-spacing:0.12em;
+      text-transform:uppercase;color:var(--tierra-cl);margin:16px 0 10px;
+    }
+    .mdesc{font-size:14px;line-height:1.65;color:var(--gris);}
+    .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .citem{background:var(--crema);border-radius:12px;padding:12px;}
+    .cicon{font-size:20px;margin-bottom:4px;}
+    .clabel{font-size:10px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:0.08em;}
+    .cval{font-size:13px;font-weight:700;color:var(--tierra);margin-top:2px;}
+    .mclose{
+      display:block;width:100%;margin-top:22px;
+      padding:15px;background:var(--tierra);color:#fff;
+      border:none;border-radius:14px;font-size:14px;font-weight:700;
+      font-family:'Lato',sans-serif;cursor:pointer;
+      transition:background 0.2s;
+    }
+    .mclose:hover{background:var(--tierra-cl);}
+
+    /* GUÍA */
+    .gsteps{display:flex;flex-direction:column;gap:0;}
+    .gstep{
+      display:flex;gap:0;position:relative;
+    }
+    .gstep:not(:last-child) .gline{
+      position:absolute;left:19px;top:40px;bottom:0;
+      width:2px;background:var(--crema-osc);
+    }
+    .gnum-wrap{display:flex;flex-direction:column;align-items:center;margin-right:16px;}
+    .gnum{
+      width:38px;height:38px;border-radius:50%;
+      background:var(--tierra);color:#fff;
+      font-family:'Playfair Display',serif;font-size:16px;
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;z-index:1;
+    }
+    .gbody{
+      background:#fff;border-radius:16px;border:1.5px solid var(--crema-osc);
+      padding:16px;flex:1;margin-bottom:14px;
+    }
+    .gtitle{font-weight:700;font-size:14px;color:var(--carbon);margin-bottom:5px;}
+    .gtext{font-size:13px;color:var(--gris);line-height:1.6;}
+
+    .tipbox{
+      background:var(--crema);border-left:4px solid var(--naranja);
+      border-radius:14px;padding:16px 18px;margin-top:20px;
+    }
+    .tipbox strong{color:var(--tierra);font-size:13px;display:block;margin-bottom:4px;}
+    .tipbox p{font-size:13px;color:var(--gris);line-height:1.55;}
+
+    /* CUIDADO */
+    .cal-wrap{
+      background:var(--tierra);border-radius:20px;
+      padding:20px;margin-bottom:22px;
+    }
+    .cal-lbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--arena);margin-bottom:14px;}
+    .cal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+    .cal-m{
+      text-align:center;font-size:11px;font-weight:700;
+      padding:8px 4px;border-radius:12px;
+      background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);
+      cursor:pointer;transition:all 0.18s;
+    }
+    .cal-m.active{background:var(--arena);color:var(--tierra);}
+    .cal-m:hover{background:rgba(255,255,255,0.2);}
+
+    .tsec-lbl{
+      font-size:10px;font-weight:700;letter-spacing:0.12em;
+      text-transform:uppercase;color:var(--tierra-cl);margin-bottom:14px;
+    }
+    .tlist{display:flex;flex-direction:column;gap:10px;}
+    .titem{
+      display:flex;align-items:center;gap:12px;
+      background:#fff;border-radius:14px;padding:14px 16px;
+      border:1.5px solid var(--crema-osc);cursor:pointer;
+    }
+    .tcheck{
+      width:22px;height:22px;border-radius:50%;
+      border:2px solid var(--musgo-cl);flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+      transition:all 0.18s;
+    }
+    .tcheck.done{background:var(--musgo);border-color:var(--musgo);}
+    .tcheck.done::after{content:'✓';color:#fff;font-size:12px;font-weight:700;}
+    .tname{font-size:14px;font-weight:400;color:var(--carbon);}
+    .tname.done{text-decoration:line-through;color:var(--gris);}
+    .tfreq{font-size:11px;color:var(--gris);margin-top:2px;}
+    .ticon{font-size:20px;margin-left:auto;}
+
+    /* ACERCA */
+    .aheader{
+      background:var(--tierra);border-radius:20px;
+      padding:32px 24px;text-align:center;margin-bottom:22px;
+      position:relative;overflow:hidden;
+    }
+    .aheader::before{
+      content:'';position:absolute;
+      top:-40px;right:-40px;width:140px;height:140px;
+      border-radius:50%;background:rgba(255,255,255,0.06);
+    }
+    .alogo{font-size:56px;margin-bottom:12px;}
+    .aname{font-family:'Playfair Display',serif;font-size:28px;color:#fff;margin-bottom:6px;}
+    .atag{font-size:13px;color:var(--arena);font-weight:300;}
+    .acard{
+      background:#fff;border-radius:18px;padding:20px;
+      border:1.5px solid var(--crema-osc);margin-bottom:14px;
+    }
+    .acardtitle{
+      font-size:10px;font-weight:700;letter-spacing:0.12em;
+      text-transform:uppercase;color:var(--tierra-cl);margin-bottom:14px;
+    }
+    .acard p{font-size:14px;line-height:1.65;color:var(--gris);}
+    .alist{display:flex;flex-direction:column;gap:12px;}
+    .aitem{display:flex;align-items:center;gap:12px;}
+    .aavatar{
+      width:40px;height:40px;border-radius:12px;
+      background:var(--crema);display:flex;align-items:center;
+      justify-content:center;font-size:20px;flex-shrink:0;
+    }
+    .ainame{font-size:14px;font-weight:700;color:var(--carbon);}
+    .airole{font-size:12px;color:var(--gris);}
+    .aver{text-align:center;font-size:12px;color:var(--gris);margin-top:20px;padding-bottom:10px;}
+  </style>
 </head>
 <body>
-    <header>
-        <img src="img/logo.png" alt="logo.png
-" width="100">
-        <h1>Jardines Polinizadores en Traspatio</h1>
-    </header>
 
-    <nav>
-        <a href="#inicio">Inicio</a>
-        <a href="#catalogo">Catálogo</a>
-        <a href="#cuidados">Cuidados</a>
-        <a href="#registro">Registro</a>
-    </nav>
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-top">
+    <p class="hero-label">🌿 Aplicación Móvil · Proyecto Académico</p>
+    <h1 class="hero-title">Jardín<br><em>Polinizador</em><br>en Traspatio</h1>
+    <p class="hero-sub">Construye y cuida tu jardín paso a paso, con guías y catálogo de plantas.</p>
+  </div>
+  <div class="hero-illus">
+    <div class="illus-ring">🌻</div>
+    <div class="illus-dots">
+      <div class="illus-dot"></div><div class="illus-dot"></div><div class="illus-dot"></div>
+    </div>
+  </div>
+  <button class="hero-btn" onclick="openApp()">
+    Entrar a PoliJardín
+    <span>→</span>
+  </button>
+</div>
 
-    <section id="inicio">
-        <h2>Propósito</h2>
-        <p>Desarrollar una aplicación que permita informar, guiar y organizar la construcción y mantenimiento de jardines polinizadores.</p>
-    </section>
+<!-- STATS STRIP -->
+<div class="stats-strip" id="statsStrip" style="display:none;">
+  <div class="stat"><div class="stat-n">12</div><div class="stat-l">Plantas</div></div>
+  <div class="stat"><div class="stat-n">6</div><div class="stat-l">Pasos</div></div>
+  <div class="stat"><div class="stat-n">🐝</div><div class="stat-l">Polinizadores</div></div>
+  <div class="stat"><div class="stat-n">12</div><div class="stat-l">Meses</div></div>
+</div>
 
-    <section id="catalogo">
-        <h2>Catálogo de plantas</h2>
-        <p>Aquí encontrarás las mejores plantas para atraer polinizadores.</p>
-    </section>
+<!-- NAV -->
+<nav class="nav" id="mainNav" style="display:none;">
+  <div class="nav-tab active" onclick="show('catalogo')"><span>🌸</span>Catálogo</div>
+  <div class="nav-tab" onclick="show('guia')"><span>📋</span>Guía</div>
+  <div class="nav-tab" onclick="show('cuidado')"><span>🗓️</span>Cuidado</div>
+  <div class="nav-tab" onclick="show('acerca')"><span>🌿</span>Acerca</div>
+</nav>
 
-    <section id="cuidados">
-        <h2>Recomendaciones de cuidado</h2>
-        <p>Consejos sobre riego, luz y suelo.</p>
-    </section>
+<!-- CATÁLOGO -->
+<section class="section active" id="catalogo">
+  <div class="sec-head">
+    <p class="sec-eyebrow">Explora</p>
+    <h2 class="sec-title">Catálogo de Plantas</h2>
+    <p class="sec-sub">Selecciona una planta para ver sus cuidados.</p>
+  </div>
+  <div class="search">
+    <span>🔍</span>
+    <input type="text" placeholder="Buscar planta..." oninput="filterPlants(this.value)"/>
+  </div>
+  <div class="chips">
+    <div class="chip active" onclick="setFilter('todos',this)">Todas</div>
+    <div class="chip" onclick="setFilter('flor',this)">Flores</div>
+    <div class="chip" onclick="setFilter('hierba',this)">Hierbas</div>
+    <div class="chip" onclick="setFilter('arbusto',this)">Arbustos</div>
+    <div class="chip" onclick="setFilter('nativa',this)">Nativas</div>
+  </div>
+  <div class="pgrid" id="pgrid"></div>
+</section>
 
-    <section id="registro">
-        <h2>Registro de plantas</h2>
-        <p>Sección para capturar nuevos registros en la base de datos.</p>
-    </section>
+<!-- GUÍA -->
+<section class="section" id="guia">
+  <div class="sec-head">
+    <p class="sec-eyebrow">Paso a paso</p>
+    <h2 class="sec-title">Construye tu Jardín</h2>
+    <p class="sec-sub">Seis pasos para crear un espacio que atraiga polinizadores.</p>
+  </div>
+  <div class="gsteps">
+    <div class="gstep">
+      <div class="gnum-wrap"><div class="gnum">1</div><div class="gline"></div></div>
+      <div class="gbody"><div class="gtitle">Elige el espacio</div><div class="gtext">Área mínima de 2×2 m con 6+ horas de sol directo. Asegúrate de que el suelo drene bien.</div></div>
+    </div>
+    <div class="gstep">
+      <div class="gnum-wrap"><div class="gnum">2</div><div class="gline"></div></div>
+      <div class="gbody"><div class="gtitle">Prepara el suelo</div><div class="gtext">Mezcla tierra de jardín con composta 2:1. Elimina maleza y afloja hasta 30 cm de profundidad.</div></div>
+    </div>
+    <div class="gstep">
+      <div class="gnum-wrap"><div class="gnum">3</div><div class="gline"></div></div>
+      <div class="gbody"><div class="gtitle">Diseña la distribución</div><div class="gtext">Plantas altas al norte, medianas al centro, rastreras al frente. Agrupa por colores para mayor atracción.</div></div>
+    </div>
+    <div class="gstep">
+      <div class="gnum-wrap"><div class="gnum">4</div><div class="gline"></div></div>
+      <div class="gbody"><div class="gtitle">Siembra o trasplanta</div><div class="gtext">Planta en la tarde para reducir estrés por calor. Riega inmediatamente y cubre con mulch.</div></div>
+    </div>
+    <div class="gstep">
+      <div class="gnum-wrap"><div class="gnum">5</div><div class="gline"></div></div>
+      <div class="gbody"><div class="gtitle">Instala fuente de agua</div><div class="gtext">Un plato poco profundo con piedras y agua limpia. Cámbiala cada 2-3 días para evitar mosquitos.</div></div>
+    </div>
+    <div class="gstep">
+      <div class="gnum-wrap"><div class="gnum">6</div></div>
+      <div class="gbody"><div class="gtitle">Observa y registra</div><div class="gtext">Fotografía las visitas de insectos. Registra qué plantas son más visitadas para futuras siembras.</div></div>
+    </div>
+  </div>
+  <div class="tipbox">
+    <strong>💡 Consejo clave</strong>
+    <p>Evita los pesticidas — son letales para abejas y mariposas. Usa jabón de potasio o aceite de neem para controlar plagas.</p>
+  </div>
+</section>
 
-    <script src="js/main.js"></script>
+<!-- CUIDADO -->
+<section class="section" id="cuidado">
+  <div class="sec-head">
+    <p class="sec-eyebrow">Mantenimiento</p>
+    <h2 class="sec-title">Plan de Cuidado</h2>
+    <p class="sec-sub">Tareas mes a mes para mantener tu jardín sano.</p>
+  </div>
+  <div class="cal-wrap">
+    <div class="cal-lbl">Selecciona el mes</div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+  <p class="tsec-lbl">Tareas del mes</p>
+  <div class="tlist" id="tlist"></div>
+</section>
+
+<!-- ACERCA -->
+<section class="section" id="acerca">
+  <div class="aheader">
+    <div class="alogo">🌿</div>
+    <div class="aname">PoliJardín</div>
+    <div class="atag">Jardines Polinizadores en Traspatio</div>
+  </div>
+  <div class="acard">
+    <div class="acardtitle">Propósito</div>
+    <p>Desarrollar una aplicación que permita informar, guiar y organizar la construcción y mantenimiento de Jardines Polinizadores en Traspatio, fortaleciendo las competencias del módulo de desarrollo para dispositivos móviles.</p>
+  </div>
+  <div class="acard">
+    <div class="acardtitle">Módulos</div>
+    <div class="alist">
+      <div class="aitem"><div class="aavatar">🌸</div><div><div class="ainame">Catálogo de Plantas</div><div class="airole">Info y cuidados de 12 plantas</div></div></div>
+      <div class="aitem"><div class="aavatar">📋</div><div><div class="ainame">Guía de Construcción</div><div class="airole">6 pasos para crear el jardín</div></div></div>
+      <div class="aitem"><div class="aavatar">🗓️</div><div><div class="ainame">Plan de Cuidado</div><div class="airole">Calendario mensual de tareas</div></div></div>
+    </div>
+  </div>
+  <div class="acard">
+    <div class="acardtitle">Tecnologías</div>
+    <div class="alist">
+      <div class="aitem"><div class="aavatar">💻</div><div><div class="ainame">HTML5 + CSS3</div><div class="airole">Estructura y diseño responsive</div></div></div>
+      <div class="aitem"><div class="aavatar">⚡</div><div><div class="ainame">JavaScript</div><div class="airole">Lógica e interactividad</div></div></div>
+      <div class="aitem"><div class="aavatar">📱</div><div><div class="ainame">Mobile-First</div><div class="airole">Optimizado para smartphones</div></div></div>
+    </div>
+  </div>
+  <div class="aver">PoliJardín v2.0 · Proyecto Académico</div>
+</section>
+
+<!-- MODAL -->
+<div class="modal" id="modal" onclick="closeModal(event)">
+  <div class="msheet">
+    <div class="mhandle"></div>
+    <div class="mtop">
+      <div class="memoji" id="mEmoji"></div>
+      <div class="mnames">
+        <div class="mname" id="mName"></div>
+        <div class="msci" id="mSci"></div>
+        <div class="mbadges" id="mBadges"></div>
+      </div>
+    </div>
+    <div class="mlabel">Descripción</div>
+    <div class="mdesc" id="mDesc"></div>
+    <div class="mlabel">Cuidados esenciales</div>
+    <div class="cgrid" id="mCare"></div>
+    <button class="mclose" onclick="document.getElementById('modal').classList.remove('open')">Cerrar</button>
+  </div>
+</div>
+
+<script>
+const plants=[
+  {id:1,emoji:'🌻',name:'Girasol',sci:'Helianthus annuus',tags:['flor','polinizador'],bg:'#fdf3d8',desc:'Planta de rápido crecimiento que atrae abejas y mariposas con sus grandes flores doradas. Excelente para bordear el jardín y proveer néctar abundante.',care:{sol:'6-8 h/día',agua:'Media',tierra:'Bien drenada',florece:'Verano-Otoño'}},
+  {id:2,emoji:'💜',name:'Lavanda',sci:'Lavandula angustifolia',tags:['arbusto','nativa','polinizador'],bg:'#f0e6ff',desc:'Arbusto aromático esencial para cualquier jardín. Sus flores violetas atraen abejas, mariposas y abejorros. Muy resistente a la sequía.',care:{sol:'6+ h/día',agua:'Baja',tierra:'Arenosa',florece:'Primavera-Verano'}},
+  {id:3,emoji:'🌺',name:'Cempasúchil',sci:'Tagetes erecta',tags:['flor','nativa','polinizador'],bg:'#fff0dc',desc:'Flor nativa mexicana que repele plagas mientras atrae polinizadores. Fácil de cultivar desde semilla y con floración larga.',care:{sol:'6 h/día',agua:'Media-baja',tierra:'Fértil',florece:'Todo el año'}},
+  {id:4,emoji:'🌿',name:'Albahaca',sci:'Ocimum basilicum',tags:['hierba','polinizador'],bg:'#e4f5e4',desc:'Hierba aromática que al florecer atrae abejas. También funciona como planta compañera para ahuyentar plagas de otras plantas del jardín.',care:{sol:'5+ h/día',agua:'Regular',tierra:'Rica en org.',florece:'Verano'}},
+  {id:5,emoji:'🌼',name:'Manzanilla',sci:'Matricaria chamomilla',tags:['flor','hierba','nativa'],bg:'#fffff0',desc:'Flor medicinal que atrae insectos benéficos. Sus flores blancas con centro amarillo son un imán para abejas pequeñas y moscas polinizadoras.',care:{sol:'4-6 h/día',agua:'Baja-media',tierra:'Ligera',florece:'Primavera'}},
+  {id:6,emoji:'🌹',name:'Rosa silvestre',sci:'Rosa canina',tags:['arbusto','nativa'],bg:'#ffe0ec',desc:'Rosal nativo con flores simples ideales para polinizadores. Sus escaramujos alimentan aves en invierno, creando un ecosistema completo.',care:{sol:'6 h/día',agua:'Media',tierra:'Drenada',florece:'Primavera-Verano'}},
+  {id:7,emoji:'🟣',name:'Verbena',sci:'Verbena bonariensis',tags:['flor','polinizador'],bg:'#ede0ff',desc:'Planta esbelta que produce racimos de flores lila. Es una de las más visitadas por mariposas monarca y otras especies migratorias.',care:{sol:'6+ h/día',agua:'Baja',tierra:'Pobre-media',florece:'Verano-Otoño'}},
+  {id:8,emoji:'🌱',name:'Romero',sci:'Salvia rosmarinus',tags:['arbusto','hierba','nativa'],bg:'#dff0df',desc:'Arbusto perenne cuyas flores azuladas son apreciadas por las abejas en invierno, cuando escasean otras flores. Extremadamente resistente.',care:{sol:'6+ h/día',agua:'Muy baja',tierra:'Pobre y seca',florece:'Invierno-Primavera'}},
+  {id:9,emoji:'🌷',name:'Amapola',sci:'Papaver rhoeas',tags:['flor','nativa'],bg:'#ffe0e0',desc:'Flor silvestre que produce gran cantidad de polen para abejas nativas. Sus pétalos rojos son llamativos y se reproducen fácilmente por semilla.',care:{sol:'6 h/día',agua:'Baja',tierra:'Poco fértil',florece:'Primavera'}},
+  {id:10,emoji:'🍀',name:'Trébol blanco',sci:'Trifolium repens',tags:['hierba','nativa','polinizador'],bg:'#e4f5e4',desc:'Excelente tapizante y fijador de nitrógeno que produce flores muy visitadas por abejas. Perfecto como suelo vivo entre otras plantas.',care:{sol:'4-6 h/día',agua:'Media',tierra:'Cualquier tipo',florece:'Primavera-Verano'}},
+  {id:11,emoji:'🌸',name:'Cosmos',sci:'Cosmos bipinnatus',tags:['flor','polinizador'],bg:'#ffe0ec',desc:'Flor de origen mexicano que produce flores rosas y blancas durante meses. Muy atractiva para mariposas y abejas, y de fácil mantenimiento.',care:{sol:'6+ h/día',agua:'Baja',tierra:'Pobre',florece:'Verano-Otoño'}},
+  {id:12,emoji:'🟡',name:'Dalia',sci:'Dahlia pinnata',tags:['flor','nativa'],bg:'#fff3d0',desc:'Planta nacional de México y fuente de néctar abundante. Las variedades de flor simple son las más accesibles para abejas y mariposas.',care:{sol:'6-8 h/día',agua:'Media-alta',tierra:'Fértil y húmeda',florece:'Verano-Otoño'}},
+];
+
+const months=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const tasksByMonth={
+  0:['Planificar diseño del jardín','Conseguir semillas y plantines','Preparar compostaje'],
+  1:['Preparar el suelo','Sembrar semillas de interior','Revisar herramientas'],
+  2:['Trasplantar plántulas','Primera siembra directa','Instalar sistema de riego'],
+  3:['Sembrar flores de verano','Controlar maleza','Revisar presencia de plagas'],
+  4:['Fertilizar con composta','Instalar tutores','Podar plantas leñosas'],
+  5:['Riego profundo semanal','Colectar semillas maduras','Monitorear polinizadores'],
+  6:['Mantener riego constante','Eliminar flores marchitas','Controlar plagas de verano'],
+  7:['Sembrar para otoño','Revisar y reparar cercas','Colectar semillas maduras'],
+  8:['Trasplantar bulbos de otoño','Preparar jardín para frío','Añadir capa de mulch'],
+  9:['Plantar bulbos de primavera','Podar arbustos','Limpiar hojas caídas'],
+  10:['Cubrir plantas sensibles','Proteger raíces con mulch','Diseñar jardín siguiente año'],
+  11:['Revisar plan anual','Hacer inventario de semillas','Planificar nuevas especies'],
+};
+
+let activeFilter='todos', searchQ='', selMonth=new Date().getMonth(), doneTasks={};
+
+function renderPlants(){
+  const grid=document.getElementById('pgrid');
+  const list=plants.filter(p=>{
+    const mf=activeFilter==='todos'||p.tags.includes(activeFilter);
+    const ms=p.name.toLowerCase().includes(searchQ.toLowerCase())||p.sci.toLowerCase().includes(searchQ.toLowerCase());
+    return mf&&ms;
+  });
+  grid.innerHTML=list.map(p=>`
+    <div class="pcard" onclick="openPlant(${p.id})">
+      <div class="pimg" style="background:${p.bg}">${p.emoji}
+        ${p.tags.includes('polinizador')?'<span class="pimg-badge">🐝 Polinizador</span>':''}
+      </div>
+      <div class="pinfo">
+        <div class="pname">${p.name}</div>
+        <div class="psci">${p.sci}</div>
+        <div class="ptags">${p.tags.map(t=>`<span class="ptag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+  if(!list.length) grid.innerHTML='<p style="grid-column:span 2;text-align:center;color:var(--gris);font-size:14px;padding:32px 0;">Sin resultados.</p>';
+}
+
+function setFilter(f,el){
+  activeFilter=f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderPlants();
+}
+function filterPlants(v){searchQ=v;renderPlants();}
+
+function openPlant(id){
+  const p=plants.find(x=>x.id===id);
+  document.getElementById('mEmoji').style.background=p.bg;
+  document.getElementById('mEmoji').textContent=p.emoji;
+  document.getElementById('mName').textContent=p.name;
+  document.getElementById('mSci').textContent=p.sci;
+  document.getElementById('mBadges').innerHTML=p.tags.map(t=>`<span class="mbadge">${t}</span>`).join('');
+  document.getElementById('mDesc').textContent=p.desc;
+  document.getElementById('mCare').innerHTML=[
+    ['☀️','Sol',p.care.sol],['💧','Riego',p.care.agua],
+    ['🌱','Suelo',p.care.tierra],['🌸','Floración',p.care.florece]
+  ].map(([i,l,v])=>`<div class="citem"><div class="cicon">${i}</div><div class="clabel">${l}</div><div class="cval">${v}</div></div>`).join('');
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(e){if(e.target.id==='modal')document.getElementById('modal').classList.remove('open');}
+
+function renderCal(){
+  document.getElementById('calGrid').innerHTML=months.map((m,i)=>
+    `<div class="cal-m ${i===selMonth?'active':''}" onclick="selMon(${i})">${m}</div>`).join('');
+  renderTasks();
+}
+function selMon(i){selMonth=i;renderCal();}
+function renderTasks(){
+  const tasks=tasksByMonth[selMonth]||[];
+  document.getElementById('tlist').innerHTML=tasks.map((t,i)=>{
+    const k=`${selMonth}-${i}`;const done=doneTasks[k];
+    return `<div class="titem" onclick="toggleTask('${k}')">
+      <div class="tcheck ${done?'done':''}" id="chk-${k}"></div>
+      <div><div class="tname ${done?'done':''}" id="tn-${k}">${t}</div><div class="tfreq">${['Mensual','Semanal','Mensual'][i%3]}</div></div>
+      <div class="ticon">${['🌱','💧','✂️'][i%3]}</div>
+    </div>`;
+  }).join('');
+}
+function toggleTask(k){
+  doneTasks[k]=!doneTasks[k];
+  document.getElementById('chk-'+k).classList.toggle('done',doneTasks[k]);
+  document.getElementById('tn-'+k).classList.toggle('done',doneTasks[k]);
+}
+
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector(`[onclick="show('${id}')"]`).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function openApp(){
+  document.getElementById('hero').style.display='none';
+  document.getElementById('statsStrip').style.display='flex';
+  document.getElementById('mainNav').style.display='flex';
+  window.scrollTo(0,0);
+}
+
+renderPlants();
+renderCal();
+</script>
 </body>
 </html>
